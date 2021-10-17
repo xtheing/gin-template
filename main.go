@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	db := common.GetDB()
+	db := common.InitDB() // 初始化数据库
 	defer db.DB()
 	r := gin.Default()
 	r = CollectRoute(r)
