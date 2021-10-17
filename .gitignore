@@ -1,2 +1,4 @@
-gin_study
+# 忽略的文件
+*_study
+
 .idea
