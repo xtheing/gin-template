@@ -78,7 +78,7 @@ func Register(c *gin.Context) {
 func Login(c *gin.Context) {
 	// 获取参数
 
-	DB := common.GetDB()
+	DB := common.GetDB() // 引入 DB实例
 	telephone := c.PostForm("telephone")
 	password := c.PostForm("password")
 
@@ -119,7 +119,15 @@ func Login(c *gin.Context) {
 	}
 	// 发放token
 
-	token := "111"
+	token, err := common.ReleaseToken(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{ // 给前端一个报错的提示。
+			"code": 500,
+			"msg":  "系统异常",
+		})
+		log.Printf("token generate error : %v", err) // 遇到了这个问题记录一下日志。
+		return
+	}
 
 	// 返回结果
 	c.JSON(200, gin.H{

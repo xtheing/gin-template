@@ -16,6 +16,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+// 调用这个方法发放token
 func ReleaseToken(user model.User) (string, error) {
 
 	expirationTime := time.Now().Add(7 * 24 * time.Hour) // 设置token 的过期时间
@@ -29,7 +30,7 @@ func ReleaseToken(user model.User) (string, error) {
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(jwtKey) // 使用jwtkey密钥生成 token
 	if err != nil {
 		return "生成token错误", err
