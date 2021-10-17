@@ -2,19 +2,20 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"log"
 	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 type User struct { //定义数据类型和字段
 	gorm.Model
 	Name      string `gorm:"type:varchar(20);not null"`
-	Telephone string `gorm:"varchar(110;not null;unique"`
+	Telephone string `gorm:"varchar(110);not null;unique"`
 	Password  string `gorm:"size:255;not null"`
 }
 
@@ -78,7 +79,7 @@ func main() {
 func isTelephoneExist(db *gorm.DB, telephone string) bool {
 	var user User
 	db.Where("telephone = ?", telephone).First(&user)
-	if user.ID != 0 {
+	if user.ID != 0 { // 找到了就不为零，找不到应该就是零了
 		return true
 	}
 	return false
