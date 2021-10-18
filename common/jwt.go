@@ -30,10 +30,19 @@ func ReleaseToken(user model.User) (string, error) {
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey) // 使用jwtkey密钥生成 token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims) // 加密方式应该是hs256
+	tokenString, err := token.SignedString(jwtKey)             // 使用jwtkey密钥生成 token
 	if err != nil {
 		return "生成token错误", err
 	}
 	return tokenString, nil
+}
+
+// 解析 token 的方法
+func ParseToken(tokenstring string) (*jwt.Token, *Claims, error) { // '*' 号表示通过指针修改的内容，返回的也是token 的内存地址的内容。
+	claims := &Claims{}                                                                                        // 格式
+	token, err := jwt.ParseWithClaims(tokenstring, claims, func(token *jwt.Token) (i interface{}, err error) { // todo 这里有点看不懂
+		return jwtKey, nil
+	})
+	return token, claims, err // 解析出claims 然会返回
 }
