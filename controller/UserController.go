@@ -145,3 +145,10 @@ func isTelephoneExist(db *gorm.DB, telephone string) bool {
 	}
 	return false
 }
+
+// 登录用户获取自己的信息
+func Info(c *gin.Context) {
+	user, _ := c.Get("user") // 直接获取登录用户的id和信息，应该就是gin.Context的作用而获取到的。
+	c.JSON(http.StatusOK, gin.H{"code": 200, "data": gin.H{"user": user}})
+	// ? 接下来需要将我们的中间件用来保护用户信息的接口。路由中
+}
