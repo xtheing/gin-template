@@ -31,12 +31,12 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		panic("failed to connect database, err: " + err.Error())
 	}
-	db.AutoMigrate(&model.User{}) // 调用的是类名
+	db.AutoMigrate(&model.User{}) // 调用的是类名，自动创建数据表
 	DB = db
 	return db
 }
 
-// 定义一个方法来获取DB实例
+// 定义一个方法来获取DB实例，需要在controller中引入
 func GetDB() *gorm.DB {
 	return DB
 }

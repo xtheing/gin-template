@@ -4,7 +4,7 @@ package model
 
 import "gorm.io/gorm"
 
-type User struct { //定义数据类型和字段
+type User struct { //定义数据类型和字段，一直没有明白数据库表 是 users，也不是user
 	gorm.Model
 	Name      string `gorm:"type:varchar(20);not null"`
 	Telephone string `gorm:"varchar(110);not null;unique"`

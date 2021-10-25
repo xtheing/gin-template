@@ -54,10 +54,10 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// 创建用户
-	hasedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	// 创建用户，用户的密码是不能明文保存的，所有所有的密码都应该加密保存，写法如下，都是通用的。
+	hasedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost) // ! 这里的加密方式自己也应该研究一下。
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{ // 返回前端一个错误，这里是一个系统基本的错误。
 			"code": 500,
 			"msg":  "加密错误",
 		})
@@ -110,7 +110,8 @@ func Login(c *gin.Context) {
 	}
 
 	// 判断密码是否正确
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+	// 判定用户密码的时候就用bcrypt的方法进行判定，第一个参数是原始的加密后的密码，第二个参数就是需要对比的密码
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil { // 如果有err 就提示密码错误。这里应该也是和if同级的一个代码。
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 400,
 			"msg":  "密码错误",

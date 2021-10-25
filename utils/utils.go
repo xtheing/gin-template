@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// 生成随机字符串的功能，传入一个数字的长度，生成相应长度的随机字符串。
 func RandomString(n int) string {
 	var letters = []byte("asdfkjj;asdf;lasqpoewitupoizx,cvnb/m")
 	result := make([]byte, n)
