@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"theing/gin_study/common"
+	"theing/gin_study/dto"
 	"theing/gin_study/model"
 	"theing/gin_study/utils"
 
@@ -149,7 +150,8 @@ func isTelephoneExist(db *gorm.DB, telephone string) bool {
 
 // 登录用户获取自己的信息
 func Info(c *gin.Context) {
-	user, _ := c.Get("user") // 直接获取登录用户的id和信息，应该就是gin.Context的作用而获取到的。
-	c.JSON(http.StatusOK, gin.H{"code": 200, "data": gin.H{"user": user}})
+	user, _ := c.Get("user")                                                                           // 直接获取登录用户的id和信息，应该就是gin.Context的作用而获取到的。
+	c.JSON(http.StatusOK, gin.H{"code": 200, "data": gin.H{"user": dto.ToUserDto(user.(model.User))}}) // 返回结果，这里的user是一个model.User类型的，所以可以直接转换成dto.ToUserDto
 	// ? 接下来需要将我们的中间件用来保护用户信息的接口。路由中
+	// todo 这里返回的用户信息不应该是用户所有的信息，需要进行设置，需要封装一个返回的固定格式。
 }
