@@ -8,7 +8,7 @@ type UserDto struct {
 	Telephone string `json:"telephone"`
 }
 
-// 转换的函数
+// 转换的函数 将model.User转换为UserDto
 func ToUserDto(user model.User) UserDto {
 	return UserDto{ // 返回一个新的UserDto格式
 		Name:      user.Name,
