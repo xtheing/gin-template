@@ -9,7 +9,15 @@ import (
 )
 
 func main() {
-	InitConfig()          // 项目开始的时候就应该读取配置文件
+	InitConfig() // 项目开始的时候就应该读取配置文件
+	isDebug := viper.GetString("isDebug")
+	if isDebug == "true" {
+		// 设置 release模式
+		gin.SetMode(gin.DebugMode)
+	} else {
+		// 设置 debug模式
+		gin.SetMode(gin.ReleaseMode)
+	}
 	db := common.InitDB() // 初始化数据库
 	defer db.DB()
 	r := gin.Default()
