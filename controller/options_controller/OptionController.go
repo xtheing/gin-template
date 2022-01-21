@@ -20,3 +20,34 @@ func Login(c *gin.Context) {
 		gin.H{"users": userList},
 		"获取成功")
 }
+
+// 获取行业领域列表json格式
+func GetIndustryList(c *gin.Context) {
+	industryList := GetIndustry()
+	response.Response(
+		c,
+		http.StatusOK,
+		200,
+		gin.H{"industry": industryList},
+		"获取成功")
+}
+
+// 获取专业选项分类
+func GetProfessionList(c *gin.Context) {
+	professionList := GetProfession()
+	if professionList == nil {
+		response.Response(
+			c,
+			http.StatusOK,
+			200,
+			gin.H{"profession": nil},
+			"获取失败")
+	} else {
+		response.Response(
+			c,
+			http.StatusOK,
+			200,
+			gin.H{"profession": professionList},
+			"获取成功")
+	}
+}

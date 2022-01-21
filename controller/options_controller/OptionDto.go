@@ -1,4 +1,4 @@
-package dto
+package option_controller
 
 import "theing/gin_study/model"
 

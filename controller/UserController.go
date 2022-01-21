@@ -53,9 +53,9 @@ func Register(c *gin.Context) {
 		response.Response(c, http.StatusInternalServerError, 500, nil, "加密错误") // 返回前端一个错误，这里是一个系统基本的错误。
 	}
 	newUser := model.User{
-		Name:      name,
-		Telephone: telephone,
-		Password:  string(hasedPassword), // 创建密码的时候不能明文
+		Username: name,
+		Tel:      telephone,
+		Password: string(hasedPassword), // 创建密码的时候不能明文
 	}
 	DB.Create(&newUser)
 	// 返回结果
