@@ -4,6 +4,7 @@ package common
 
 import (
 	"fmt"
+	"theing/gin_study/model"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
@@ -33,7 +34,7 @@ func InitDB() *gorm.DB {
 		if err != nil {
 			panic("mysql数据库连接失败: " + err.Error())
 		}
-		// db.AutoMigrate(&model.User{}) // 调用的是类名，自动创建数据表
+		db.AutoMigrate(&model.User{}) // 调用的是类名，自动创建数据表
 		DB = db
 		return db
 	} else if driverName == "postgresql" {
@@ -54,7 +55,7 @@ func InitDB() *gorm.DB {
 		if err != nil {
 			panic("pgsql数据库连接失败" + err.Error())
 		}
-		// db.AutoMigrate(&model.User{}) // 调用的是类名，自动创建数据表
+		db.AutoMigrate(&model.User{}) // 调用的是类名，自动创建数据表
 		DB = db
 		return db
 	}
