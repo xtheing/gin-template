@@ -6,7 +6,7 @@
 ### 克隆项目
 
 ```bash
-$ git clone https://gitee.com/theing/gin_study.git
+$ git clone https://gitee.com/theing/gin_base.git
 ```
 
 ### 运行
