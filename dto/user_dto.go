@@ -12,6 +12,6 @@ type UserDto struct {
 func ToUserDto(user model.User) UserDto {
 	return UserDto{ // 返回一个新的UserDto格式
 		Name:      user.Username,
-		Telephone: user.Tel,
+		Telephone: user.Telephone,
 	}
 }

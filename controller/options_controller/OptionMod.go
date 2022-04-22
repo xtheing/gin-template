@@ -15,7 +15,7 @@ func TestSelect(userId int) (userList []model.User) {
 // 获取行业领域列表json格式
 func GetIndustry() (industry_jsonb model.Option_industry) {
 	DB := common.GetDB()
-	// DB.Raw("select uuid, name, industry_jsonb from option_industry where uuid = 'OPI20211230113204VCJHWVHT' and name = 'industry_jsonb';").Scan(&industry)
+	// DB.Raw("select uuid, name, industry_jsonb from option_industry where uuid = 'OPI20211230113204VCJHWVHT' and name = 'industry_jsonb';").Scan(&industry_jsonb)
 	DB.Select("uuid, name, industry_jsonb").Table("option_industry").Where("uuid = ? and name = ?", "OPI20211230113204VCJHWVHT", "industry_jsonb").Scan(&industry_jsonb)
 	return
 }
