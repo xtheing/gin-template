@@ -22,9 +22,9 @@ datasource:
 
 pgsqlsource:
   dirverName: postgresql
-  host: sh-postgres-r1ko2h0i.sql.tencentcdb.com
-  port: 24155
+  host: 127.0.0.1
+  port: 54321
   database: gin_zc
-  username: ZhouXin
-  password: 9bTBzH9W2a:!bnc
+  username: postgres
+  password: 123
   charset: utf8
