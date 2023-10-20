@@ -12,7 +12,7 @@ $ git clone https://gitee.com/theing/gin_base.git
 ### 运行
 
 ```bash
-$ go run main.go routers.go
+$ go run main.go
 ```
 
 ### 编译运行
@@ -25,6 +25,11 @@ $ go build && ./gin_study
 
 TODO
 ---
+
+- [ ] 用户反馈功能
+- [ ] jupyter 空间的启动
+- [ ] 各个厂商短信发送的实现，验证码
+- [ ] 文件上传的实现
 - [ ] 升级整个项目，使用最新的golang环境
 - [x] 更改配置文件，适配环境变量获取配置的方式。
 - [x] 配置dockerfile 和镜像
