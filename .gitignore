@@ -65,4 +65,7 @@ go.work
 
 # Env
 .env
-.env_example
+env_example
+
+# vscode
+.vscode/

@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"theing/gin_study/common"
+	"theing/gin_study/routers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -10,19 +11,17 @@ import (
 
 func main() {
 	InitConfig() // 项目开始的时候就应该读取配置文件
-	isDebug := viper.GetString("isDebug")
+	isDebug := viper.GetString("is_debug")
 	if isDebug == "true" {
-		// 设置 release模式
 		gin.SetMode(gin.DebugMode)
 	} else {
-		// 设置 debug模式
 		gin.SetMode(gin.ReleaseMode)
 	}
 	db := common.InitDB() // 初始化数据库
 	defer db.DB()
 	r := gin.Default()
-	r = CollectRoute(r) // 路由中的collectroute，是一个gin的引擎，返回的也是一个引擎，可以说是代理服务。
-	port := viper.GetString("server.port")
+	r = routers.CollectRoute(r) // 路由中的collectroute，是一个gin的引擎，返回的也是一个引擎，可以说是代理服务。
+	port := viper.GetString("server_port")
 	if port != "" {
 		r.Run(":" + port) // 如果有port，就使用这个端口号
 	}
@@ -43,4 +42,6 @@ func InitConfig() {
 	if err != nil {
 		panic(err)
 	}
+	viper.SetEnvPrefix("tpl") // 读取环境变量的前缀为tpl
+	viper.AutomaticEnv()      //从环境变量中获取配置
 }
