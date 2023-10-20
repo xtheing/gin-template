@@ -2,7 +2,7 @@ FROM golang:latest AS build
 WORKDIR /app
 COPY . /app
 ENV GOPROXY https://goproxy.cn,direct
-RUN CGO_ENABLED=0 go build -o /app/main main.go routers.go
+RUN CGO_ENABLED=0 go build -o /app/main main.go
 
 # ------------------ 生成镜像 ------------------
 FROM scratch
