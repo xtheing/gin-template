@@ -14,7 +14,7 @@ import (
 // 接收一个gin 引擎，返回一个引擎，不是很懂
 func CollectRoute(r *gin.Engine) *gin.Engine {
 	r.POST("/api/auth/register", controller.Register)                     // 导入包中的模块
-	r.POST("/api/auth/login", controller.Login)                           // 用户登录
+	r.POST("/api/auth/login", controller.UserLogin)                       // 用户登录
 	r.GET("/api/auth/info", middleware.AuthMiddleware(), controller.Info) // middleware.AuthMiddleware()，表示利用中间件包含用户的信息。
 	r.GET("/api/auth/info2", option_controller.Login)
 	r.GET("/api/GetIndustryList", option_controller.GetIndustryList)     // 获取行业领域列表json格式
