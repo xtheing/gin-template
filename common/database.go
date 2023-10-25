@@ -4,7 +4,7 @@ package common
 
 import (
 	"fmt"
-	"theing/gin_study/model"
+	"theing/gin-template/model"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"

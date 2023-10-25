@@ -5,13 +5,13 @@ package middleware
 import (
 	"net/http"
 	"strings"
-	"theing/gin_study/common"
-	"theing/gin_study/model"
+	"theing/gin-template/common"
+	"theing/gin-template/model"
 
 	"github.com/gin-gonic/gin"
 )
 
-//gin 的中间件就是一个函数，返回一个handlerfunc
+// gin 的中间件就是一个函数，返回一个handlerfunc
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 获取 authorization header

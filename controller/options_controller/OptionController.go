@@ -3,7 +3,7 @@ package option_controller
 import (
 	"fmt"
 	"net/http"
-	"theing/gin_study/response"
+	"theing/gin-template/response"
 
 	"github.com/gin-gonic/gin"
 )

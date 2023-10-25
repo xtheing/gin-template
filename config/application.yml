@@ -21,9 +21,9 @@ mysql_charset: utf8
 
 # postgresql 配置
 postgres_dirverName: postgresql
-postgres_host: 127.0.0.1
-postgres_port: 5432
+postgres_host: code.theing.cc
+postgres_port: 5414
 postgres_database: gin_zc
-postgres_username: postgres
-postgres_password: 123456
+postgres_username: admin
+postgres_password: 12357890
 postgres_charset: utf8

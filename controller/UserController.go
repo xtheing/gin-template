@@ -5,11 +5,11 @@ package controller
 import (
 	"log"
 	"net/http"
-	"theing/gin_study/common"
-	"theing/gin_study/dto"
-	"theing/gin_study/model"
-	"theing/gin_study/response"
-	"theing/gin_study/utils"
+	"theing/gin-template/common"
+	"theing/gin-template/dto"
+	"theing/gin-template/model"
+	"theing/gin-template/response"
+	"theing/gin-template/utils"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"

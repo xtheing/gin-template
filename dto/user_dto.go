@@ -1,6 +1,6 @@
 package dto
 
-import "theing/gin_study/model"
+import "theing/gin-template/model"
 
 // UserDTO 用户数据传输对象，相当于是一个格式的定义和转换。
 type UserDto struct {

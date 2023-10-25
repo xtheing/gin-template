@@ -69,3 +69,5 @@ env_example
 
 # vscode
 .vscode/
+
+go.sum

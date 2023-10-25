@@ -2,8 +2,8 @@ package main
 
 import (
 	"os"
-	"theing/gin_study/common"
-	"theing/gin_study/routers"
+	"theing/gin-template/common"
+	"theing/gin-template/routers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"

@@ -3,9 +3,9 @@ package admin_controller
 import (
 	"log"
 	"net/http"
-	"theing/gin_study/common"
-	"theing/gin_study/model"
-	"theing/gin_study/response"
+	"theing/gin-template/common"
+	"theing/gin-template/model"
+	"theing/gin-template/response"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"

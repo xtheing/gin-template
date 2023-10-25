@@ -1,7 +1,7 @@
 package common
 
 import (
-	"theing/gin_study/model"
+	"theing/gin-template/model"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"

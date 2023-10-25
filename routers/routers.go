@@ -3,10 +3,10 @@ package routers
 // 用于分离路由
 
 import (
-	controller "theing/gin_study/controller"
-	"theing/gin_study/controller/admin_controller"
-	option_controller "theing/gin_study/controller/options_controller"
-	middleware "theing/gin_study/middleware"
+	controller "theing/gin-template/controller"
+	"theing/gin-template/controller/admin_controller"
+	option_controller "theing/gin-template/controller/options_controller"
+	middleware "theing/gin-template/middleware"
 
 	gin "github.com/gin-gonic/gin"
 )
