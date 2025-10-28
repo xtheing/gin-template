@@ -10,6 +10,15 @@ is_debug: true
 
 server_port: 8080
 
+# JWT 配置
+jwt:
+  # JWT 密钥，生产环境请使用环境变量设置
+  secret: "your-super-secret-jwt-key-change-this-in-production"
+  # Token 过期时间（小时）
+  expire_hours: 168
+  # Token 签发者
+  issuer: "gin-template"
+
 # mysql 配置
 mysql_dirverName: mysql
 mysql_host: 127.0.0.1

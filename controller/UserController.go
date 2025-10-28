@@ -5,6 +5,7 @@ package controller
 import (
 	"log"
 	"net/http"
+	"strings"
 	"theing/gin-template/common"
 	"theing/gin-template/dto"
 	"theing/gin-template/model"
@@ -30,9 +31,18 @@ func Register(c *gin.Context) {
 		response.Response(c, http.StatusUnprocessableEntity, 422, nil, "手机号必须为11位")
 		return
 	}
-	if len(password) < 6 {
-		response.Response(c, http.StatusUnprocessableEntity, 422, nil, "密码不能少于6位")
+
+	// 使用新的密码验证逻辑
+	passwordValidation := utils.ValidatePassword(password)
+	if !passwordValidation.IsValid {
+		errorMsg := "密码不符合要求：" + strings.Join(passwordValidation.Errors, "；")
+		response.Response(c, http.StatusUnprocessableEntity, 422, nil, errorMsg)
 		return
+	}
+
+	// 如果密码强度较弱，给出建议但不阻止注册
+	if passwordValidation.Strength != utils.PasswordStrong {
+		log.Printf("用户注册密码强度提醒：%v", strings.Join(passwordValidation.Suggestions, "；"))
 	}
 
 	// 如果名称没有传入，给一个10位的随机字符串
@@ -84,6 +94,8 @@ func UserLogin(c *gin.Context) {
 		response.Response(c, http.StatusUnprocessableEntity, 422, nil, "手机号必须为11位")
 		return
 	}
+
+	// 密码长度基本检查
 	if len(login.Password) < 6 {
 		response.Response(c, http.StatusUnprocessableEntity, 422, nil, "密码不能少于6位")
 		return
