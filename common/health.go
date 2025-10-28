@@ -1,6 +1,7 @@
 package common
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -133,9 +134,12 @@ func checkServicesHealth(status *HealthStatus) {
 	jwtStatus := checkJWTService()
 	status.Services["jwt"] = jwtStatus
 
+	// 检查缓存服务
+	cacheStatus := checkCacheService()
+	status.Services["cache"] = cacheStatus
+
 	// 可以添加更多服务检查
 	// status.Services["redis"] = checkRedisService()
-	// status.Services["cache"] = checkCacheService()
 }
 
 // checkJWTService 检查JWT服务状态
@@ -153,6 +157,56 @@ func checkJWTService() map[string]interface{} {
 	return map[string]interface{}{
 		"status": "healthy",
 		"config": "configured",
+	}
+}
+
+// checkCacheService 检查缓存服务状态
+func checkCacheService() map[string]interface{} {
+	if Cache == nil {
+		return map[string]interface{}{
+			"status": "unhealthy",
+			"error":  "缓存客户端未初始化",
+		}
+	}
+
+	// 尝试从缓存获取一个测试键
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	testKey := "health_check_test"
+	testValue := "ok"
+	
+	// 设置测试键
+	if err := Cache.Set(ctx, testKey, testValue, 5*time.Second); err != nil {
+		return map[string]interface{}{
+			"status": "unhealthy",
+			"error":  fmt.Sprintf("缓存写入失败: %v", err),
+		}
+	}
+
+	// 读取测试键
+	value, err := Cache.Get(ctx, testKey)
+	if err != nil {
+		return map[string]interface{}{
+			"status": "unhealthy",
+			"error":  fmt.Sprintf("缓存读取失败: %v", err),
+		}
+	}
+
+	// 删除测试键
+	Cache.Delete(ctx, testKey)
+
+	if value != testValue {
+		return map[string]interface{}{
+			"status": "unhealthy",
+			"error":  "缓存数据不一致",
+		}
+	}
+
+	config := GetCacheConfig()
+	return map[string]interface{}{
+		"status": "healthy",
+		"config": config,
 	}
 }
 

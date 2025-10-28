@@ -36,3 +36,10 @@ postgres_database: gin_zc
 postgres_username: admin
 postgres_password: 12357890
 postgres_charset: utf8
+
+# 缓存配置
+cache_host: localhost
+cache_port: 6379
+cache_password: ""
+cache_db: 0
+cache_prefix: "gin_template:"

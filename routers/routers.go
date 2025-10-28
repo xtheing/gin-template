@@ -3,6 +3,7 @@ package routers
 // 用于分离路由
 
 import (
+	"theing/gin-template/common"
 	controller "theing/gin-template/controller"
 	"theing/gin-template/controller/admin_controller"
 	option_controller "theing/gin-template/controller/options_controller"
@@ -13,11 +14,16 @@ import (
 
 // 接收一个gin 引擎，返回一个引擎，不是很懂
 func CollectRoute(r *gin.Engine) *gin.Engine {
+	// 初始化监控指标
+	common.InitMetrics()
+	
 	// 添加全局中间件
 	r.Use(errorMiddleware.LoggingMiddleware())           // 日志中间件
 	r.Use(errorMiddleware.RequestIDMiddleware())        // 请求ID中间件
 	r.Use(errorMiddleware.ErrorHandlingMiddleware())     // 全局错误处理中间件
 	r.Use(errorMiddleware.ErrorHandlerMiddleware())       // 统一错误处理中间件
+	r.Use(errorMiddleware.MetricsMiddleware())           // 性能监控中间件
+	r.Use(errorMiddleware.DatabaseMetricsMiddleware())    // 数据库监控中间件
 
 	// API 路由组
 	api := r.Group("/api")
@@ -51,6 +57,9 @@ func CollectRoute(r *gin.Engine) *gin.Engine {
 			health.GET("/stats", controller.DatabaseStats)     // 数据库统计信息
 			health.GET("/info", controller.SystemInfo)          // 系统信息
 		}
+
+		// 监控指标路由
+		api.GET("/metrics", errorMiddleware.MetricsHandler()) // Prometheus 指标
 
 		// 兼容旧路由
 		api.GET("/auth/info2", option_controller.Login)
