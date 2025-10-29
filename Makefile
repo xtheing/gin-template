@@ -242,3 +242,231 @@ check-tools: ## 检查必需的工具
 			echo "✗ $$tool is not installed"; \
 		fi; \
 	done
+
+# 工程化命令
+dev-setup: ## 快速搭建开发环境
+	@echo "Setting up development environment..."
+	@./scripts/quick-start.sh start
+
+dev-stop: ## 停止开发环境
+	@echo "Stopping development environment..."
+	@./scripts/quick-start.sh stop
+
+dev-clean: ## 清理开发环境
+	@echo "Cleaning development environment..."
+	@./scripts/quick-start.sh clean
+
+# 部署命令
+deploy-prod: ## 部署到生产环境
+	@echo "Deploying to production..."
+	@./scripts/deploy.sh deploy
+
+deploy-update: ## 更新部署
+	@echo "Updating deployment..."
+	@./scripts/deploy.sh update
+
+deploy-backup: ## 备份数据
+	@echo "Creating backup..."
+	@./scripts/deploy.sh backup
+
+deploy-rollback: ## 回滚部署
+	@echo "Rolling back deployment..."
+	@./scripts/deploy.sh rollback
+
+deploy-health: ## 检查部署健康状态
+	@echo "Checking deployment health..."
+	@./scripts/deploy.sh health
+
+# 监控命令
+monitor-start: ## 启动监控服务
+	@echo "Starting monitoring services..."
+	docker-compose up -d prometheus grafana
+
+monitor-stop: ## 停止监控服务
+	@echo "Stopping monitoring services..."
+	docker-compose down prometheus grafana
+
+monitor-logs: ## 查看监控日志
+	@echo "Showing monitoring logs..."
+	docker-compose logs -f prometheus grafana
+
+# 容器管理
+docker-start: ## 启动所有服务
+	@echo "Starting all services..."
+	docker-compose up -d
+
+docker-stop: ## 停止所有服务
+	@echo "Stopping all services..."
+	docker-compose down
+
+docker-restart: ## 重启所有服务
+	@echo "Restarting all services..."
+	docker-compose restart
+
+docker-logs: ## 查看服务日志
+	@echo "Showing service logs..."
+	docker-compose logs -f
+
+docker-status: ## 查看服务状态
+	@echo "Showing service status..."
+	docker-compose ps
+
+# 配置管理
+config-validate: ## 验证配置文件
+	@echo "Validating configuration..."
+	@if [ -f config/environments.yml ]; then \
+		echo "✓ Configuration file exists"; \
+	else \
+		echo "✗ Configuration file missing"; \
+	fi
+
+config-dev: ## 设置开发环境配置
+	@echo "Setting up development configuration..."
+	@cp config/environments.yml config/application.yml
+	@echo "Development configuration loaded"
+
+config-prod: ## 设置生产环境配置
+	@echo "Setting up production configuration..."
+	@cp config/environments.yml config/application.yml
+	@echo "Production configuration loaded"
+
+# 数据库管理
+db-start: ## 启动数据库服务
+	@echo "Starting database..."
+	docker-compose up -d postgres
+
+db-stop: ## 停止数据库服务
+	@echo "Stopping database..."
+	docker-compose stop postgres
+
+db-reset: ## 重置数据库
+	@echo "Resetting database..."
+	docker-compose down postgres
+	docker volume rm gin-template_postgres_data 2>/dev/null || true
+	docker-compose up -d postgres
+
+db-shell: ## 连接数据库 shell
+	@echo "Connecting to database shell..."
+	docker-compose exec postgres psql -U postgres gin_template
+
+# 缓存管理
+cache-start: ## 启动缓存服务
+	@echo "Starting Redis..."
+	docker-compose up -d redis
+
+cache-stop: ## 停止缓存服务
+	@echo "Stopping Redis..."
+	docker-compose stop redis
+
+cache-reset: ## 重置缓存
+	@echo "Resetting Redis..."
+	docker-compose exec redis redis-cli FLUSHALL
+
+cache-shell: ## 连接 Redis shell
+	@echo "Connecting to Redis shell..."
+	docker-compose exec redis redis-cli
+
+# 性能分析
+profile-cpu: ## CPU 性能分析
+	@echo "Starting CPU profiling..."
+	go tool pprof http://localhost:8080/debug/pprof/profile
+
+profile-memory: ## 内存性能分析
+	@echo "Starting memory profiling..."
+	go tool pprof http://localhost:8080/debug/pprof/heap
+
+profile-goroutine: ## Goroutine 分析
+	@echo "Starting goroutine profiling..."
+	go tool pprof http://localhost:8080/debug/pprof/goroutine
+
+# 日志管理
+logs-app: ## 查看应用日志
+	@echo "Showing application logs..."
+	tail -f logs/app.log
+
+logs-access: ## 查看访问日志
+	@echo "Showing access logs..."
+	docker-compose logs -f nginx
+
+logs-all: ## 查看所有服务日志
+	@echo "Showing all service logs..."
+	docker-compose logs -f
+
+# 安全检查
+security-deps: ## 检查依赖安全
+	@echo "Checking dependency security..."
+	@if command -v govulncheck >/dev/null 2>&1; then \
+		govulncheck ./...; \
+	else \
+		echo "Installing govulncheck..."; \
+		go install golang.org/x/vuln/cmd/govulncheck@latest; \
+		govulncheck ./...; \
+	fi
+
+security-licenses: ## 检查许可证
+	@echo "Checking licenses..."
+	@if command -v go-licenses >/dev/null 2>&1; then \
+		go-licenses check ./...; \
+	else \
+		echo "Installing go-licenses..."; \
+		go install github.com/google/go-licenses@latest; \
+		go-licenses check ./...; \
+	fi
+
+# 完整工作流
+workflow-dev: ## 完整的开发工作流
+	@echo "Running complete development workflow..."
+	make deps
+	make quality
+	make test-coverage
+	make docs
+	@echo "Development workflow completed!"
+
+workflow-ci: ## 模拟 CI 工作流
+	@echo "Running CI workflow..."
+	make deps
+	make test
+	make lint
+	make security
+	make build
+	@echo "CI workflow completed!"
+
+workflow-release: ## 发布工作流
+	@echo "Running release workflow..."
+	make clean
+	make test-coverage
+	make quality
+	make security
+	make build-prod
+	make docs
+	@echo "Release workflow completed!"
+
+# 帮助信息
+help-extended: ## 显示扩展帮助信息
+	@echo "=== Extended Help ==="
+	@echo ""
+	@echo "Development Commands:"
+	@echo "  dev-setup      - Quick setup development environment"
+	@echo "  dev-stop       - Stop development environment"
+	@echo "  dev-clean      - Clean development environment"
+	@echo ""
+	@echo "Deployment Commands:"
+	@echo "  deploy-prod    - Deploy to production"
+	@echo "  deploy-update   - Update deployment"
+	@echo "  deploy-backup  - Create backup"
+	@echo "  deploy-rollback - Rollback deployment"
+	@echo "  deploy-health   - Check deployment health"
+	@echo ""
+	@echo "Monitoring Commands:"
+	@echo "  monitor-start   - Start monitoring services"
+	@echo "  monitor-stop    - Stop monitoring services"
+	@echo "  monitor-logs    - View monitoring logs"
+	@echo ""
+	@echo "Container Commands:"
+	@echo "  docker-start    - Start all services"
+	@echo "  docker-stop     - Stop all services"
+	@echo "  docker-restart  - Restart all services"
+	@echo "  docker-logs     - View service logs"
+	@echo "  docker-status   - View service status"
+	@echo ""
+	@echo "For basic commands, run: make help"

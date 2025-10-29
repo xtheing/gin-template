@@ -1,0 +1,320 @@
+# 多环境配置管理
+# 支持开发、测试、生产环境的不同配置
+
+environments:
+  # 开发环境
+  development:
+    server:
+      mode: "debug"
+      port: 8080
+      host: "0.0.0.0"
+      read_timeout: 30
+      write_timeout: 30
+      max_header_bytes: 1048576
+    
+    database:
+      driver: "postgres"
+      host: "localhost"
+      port: 5432
+      user: "postgres"
+      password: "postgres"
+      name: "gin_template_dev"
+      ssl_mode: "disable"
+      max_idle_conns: 10
+      max_open_conns: 100
+      conn_max_lifetime: 3600
+    
+    redis:
+      host: "localhost"
+      port: 6379
+      password: ""
+      db: 0
+      pool_size: 10
+      min_idle_conns: 5
+      dial_timeout: 5
+      read_timeout: 3
+      write_timeout: 3
+    
+    jwt:
+      secret: "dev-jwt-secret-key-not-for-production"
+      expire_hours: 24
+      issuer: "gin-template-dev"
+    
+    cache:
+      prefix: "gin_template:dev:"
+      default_expiration: 3600
+    
+    logging:
+      level: "debug"
+      format: "json"
+      output: "stdout"
+      file: "logs/app.log"
+      max_size: 100
+      max_backups: 10
+      max_age: 30
+      compress: true
+    
+    security:
+      cors:
+        allowed_origins: ["*"]
+        allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        allowed_headers: ["*"]
+        expose_headers: ["Content-Length"]
+        allow_credentials: true
+        max_age: 86400
+      
+      rate_limit:
+        enabled: true
+        requests_per_minute: 100
+        burst: 200
+      
+      csrf:
+        enabled: false
+        secret: "dev-csrf-secret"
+      
+      content_security_policy: "default-src 'self'"
+      
+      trusted_proxies: ["127.0.0.1", "::1"]
+    
+    monitoring:
+      enabled: true
+      prometheus:
+        enabled: true
+        path: "/api/metrics"
+      pprof:
+        enabled: true
+        path: "/debug/pprof"
+
+  # 测试环境
+  testing:
+    server:
+      mode: "test"
+      port: 8081
+      host: "127.0.0.1"
+      read_timeout: 30
+      write_timeout: 30
+      max_header_bytes: 1048576
+    
+    database:
+      driver: "postgres"
+      host: "localhost"
+      port: 5432
+      user: "postgres"
+      password: "postgres"
+      name: "gin_template_test"
+      ssl_mode: "disable"
+      max_idle_conns: 5
+      max_open_conns: 20
+      conn_max_lifetime: 1800
+    
+    redis:
+      host: "localhost"
+      port: 6379
+      password: ""
+      db: 1
+      pool_size: 5
+      min_idle_conns: 2
+      dial_timeout: 5
+      read_timeout: 3
+      write_timeout: 3
+    
+    jwt:
+      secret: "test-jwt-secret-key"
+      expire_hours: 1
+      issuer: "gin-template-test"
+    
+    cache:
+      prefix: "gin_template:test:"
+      default_expiration: 1800
+    
+    logging:
+      level: "info"
+      format: "json"
+      output: "stdout"
+      file: "logs/test.log"
+      max_size: 50
+      max_backups: 5
+      max_age: 7
+      compress: true
+    
+    security:
+      cors:
+        allowed_origins: ["*"]
+        allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        allowed_headers: ["*"]
+        expose_headers: ["Content-Length"]
+        allow_credentials: false
+        max_age: 86400
+      
+      rate_limit:
+        enabled: true
+        requests_per_minute: 200
+        burst: 400
+      
+      csrf:
+        enabled: true
+        secret: "test-csrf-secret"
+      
+      content_security_policy: "default-src 'self'"
+      
+      trusted_proxies: ["127.0.0.1", "::1"]
+    
+    monitoring:
+      enabled: true
+      prometheus:
+        enabled: true
+        path: "/api/metrics"
+      pprof:
+        enabled: false
+
+  # 生产环境
+  production:
+    server:
+      mode: "release"
+      port: 8080
+      host: "0.0.0.0"
+      read_timeout: 30
+      write_timeout: 30
+      max_header_bytes: 1048576
+    
+    database:
+      driver: "postgres"
+      host: "${DB_HOST}"
+      port: ${DB_PORT}
+      user: "${DB_USER}"
+      password: "${DB_PASSWORD}"
+      name: "${DB_NAME}"
+      ssl_mode: "require"
+      max_idle_conns: 20
+      max_open_conns: 100
+      conn_max_lifetime: 3600
+    
+    redis:
+      host: "${REDIS_HOST}"
+      port: ${REDIS_PORT}
+      password: "${REDIS_PASSWORD}"
+      db: ${REDIS_DB}
+      pool_size: 20
+      min_idle_conns: 10
+      dial_timeout: 5
+      read_timeout: 3
+      write_timeout: 3
+    
+    jwt:
+      secret: "${JWT_SECRET}"
+      expire_hours: 24
+      issuer: "gin-template"
+    
+    cache:
+      prefix: "gin_template:"
+      default_expiration: 7200
+    
+    logging:
+      level: "info"
+      format: "json"
+      output: "file"
+      file: "logs/app.log"
+      max_size: 500
+      max_backups: 30
+      max_age: 90
+      compress: true
+    
+    security:
+      cors:
+        allowed_origins: ["${ALLOWED_ORIGINS}"]
+        allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        allowed_headers: ["Content-Type", "Authorization", "X-Requested-With"]
+        expose_headers: ["Content-Length", "X-Total-Count"]
+        allow_credentials: true
+        max_age: 86400
+      
+      rate_limit:
+        enabled: true
+        requests_per_minute: 60
+        burst: 100
+      
+      csrf:
+        enabled: true
+        secret: "${CSRF_SECRET}"
+      
+      content_security_policy: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+      
+      trusted_proxies: "${TRUSTED_PROXIES}"
+    
+    monitoring:
+      enabled: true
+      prometheus:
+        enabled: true
+        path: "/api/metrics"
+      pprof:
+        enabled: false
+
+# 默认环境
+default_environment: "development"
+
+# 配置验证规则
+validation:
+  server:
+    port:
+      type: "int"
+      min: 1
+      max: 65535
+    mode:
+      type: "string"
+      enum: ["debug", "release", "test"]
+  
+  database:
+    port:
+      type: "int"
+      min: 1
+      max: 65535
+    max_idle_conns:
+      type: "int"
+      min: 1
+      max: 1000
+    max_open_conns:
+      type: "int"
+      min: 1
+      max: 10000
+  
+  redis:
+    port:
+      type: "int"
+      min: 1
+      max: 65535
+    db:
+      type: "int"
+      min: 0
+      max: 15
+    pool_size:
+      type: "int"
+      min: 1
+      max: 1000
+  
+  jwt:
+    expire_hours:
+      type: "int"
+      min: 1
+      max: 8760  # 一年
+  
+  logging:
+    level:
+      type: "string"
+      enum: ["debug", "info", "warn", "error", "fatal"]
+    format:
+      type: "string"
+      enum: ["json", "text"]
+    output:
+      type: "string"
+      enum: ["stdout", "stderr", "file"]
+  
+  security:
+    rate_limit:
+      requests_per_minute:
+        type: "int"
+        min: 1
+        max: 10000
+      burst:
+        type: "int"
+        min: 1
+        max: 20000
