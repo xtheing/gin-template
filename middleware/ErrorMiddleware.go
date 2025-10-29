@@ -13,20 +13,20 @@ import (
 
 // Response 统一响应结构
 type Response struct {
-	Code      int         `json:"code"`      // 业务错误码
-	Message   string      `json:"message"`   // 错误信息
-	Data      interface{} `json:"data"`      // 响应数据
+	Code      int         `json:"code"`       // 业务错误码
+	Message   string      `json:"message"`    // 错误信息
+	Data      interface{} `json:"data"`       // 响应数据
 	RequestID string      `json:"request_id"` // 请求ID
-	Timestamp int64       `json:"timestamp"` // 时间戳
+	Timestamp int64       `json:"timestamp"`  // 时间戳
 }
 
 // ErrorResponseStruct 错误响应结构
 type ErrorResponseStruct struct {
-	Code      int    `json:"code"`      // 业务错误码
-	Message   string `json:"message"`   // 错误信息
-	Details   string `json:"details"`   // 详细错误信息
-	RequestID string `json:"request_id"` // 请求ID
-	Timestamp int64  `json:"timestamp"` // 时间戳
+	Code      int    `json:"code"`               // 业务错误码
+	Message   string `json:"message"`            // 错误信息
+	Details   string `json:"details"`            // 详细错误信息
+	RequestID string `json:"request_id"`         // 请求ID
+	Timestamp int64  `json:"timestamp"`          // 时间戳
 	TraceID   string `json:"trace_id,omitempty"` // 追踪ID
 }
 
@@ -35,9 +35,9 @@ func ErrorHandlingMiddleware() gin.HandlerFunc {
 	return gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
 		// 记录panic堆栈信息
 		log.Printf("Panic recovered: %v\n%s", recovered, debug.Stack())
-		
+
 		// 返回服务器内部错误
-	ErrorResponse(c, common.ErrInternalError)
+		ErrorResponse(c, common.ErrInternalError)
 		c.Abort()
 	})
 }
@@ -50,7 +50,7 @@ func ErrorHandlerMiddleware() gin.HandlerFunc {
 		// 检查是否有错误
 		if len(c.Errors) > 0 {
 			err := c.Errors.Last()
-			
+
 			// 根据错误类型处理
 			switch e := err.Err.(type) {
 			case *common.AppError:
@@ -61,7 +61,7 @@ func ErrorHandlerMiddleware() gin.HandlerFunc {
 				log.Printf("Unknown error: %v", err)
 				ErrorResponse(c, common.ErrInternalError)
 			}
-			
+
 			c.Abort()
 			return
 		}
@@ -75,10 +75,10 @@ func RequestIDMiddleware() gin.HandlerFunc {
 		if requestID == "" {
 			requestID = generateRequestID()
 		}
-		
+
 		c.Set("request_id", requestID)
 		c.Header("X-Request-ID", requestID)
-		
+
 		c.Next()
 	}
 }
@@ -118,12 +118,12 @@ func SuccessResponse(c *gin.Context, data interface{}) {
 // ErrorResponse 错误响应
 func ErrorResponse(c *gin.Context, appErr *common.AppError) {
 	requestID, _ := c.Get("request_id")
-	
+
 	// 记录错误日志
 	if appErr.Code >= common.CodeInternalError {
 		log.Printf("Internal Error [%s]: %s", requestID.(string), appErr.Error())
 	}
-	
+
 	response := ErrorResponseStruct{
 		Code:      int(appErr.Code),
 		Message:   appErr.Message,
@@ -132,7 +132,7 @@ func ErrorResponse(c *gin.Context, appErr *common.AppError) {
 		Timestamp: time.Now().Unix(),
 		TraceID:   generateTraceID(),
 	}
-	
+
 	c.JSON(appErr.HTTPStatus, response)
 }
 

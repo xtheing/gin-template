@@ -1,0 +1,181 @@
+# golangci-lint 配置文件
+run:
+  timeout: 5m
+  issues-exit-code: 1
+  tests: true
+  skip-dirs:
+    - vendor
+    - docs
+  skip-files:
+    - ".*\\.pb\\.go$"
+    - ".*_generated\\.go$"
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+  uniq-by-line: true
+  sort-results: true
+
+linters-settings:
+  govet:
+    check-shadowing: true
+    enable-all: true
+    disable:
+      - fieldalignment # 太严格，暂时禁用
+
+  golint:
+    min-confidence: 0.8
+
+  gofmt:
+    simplify: true
+
+  goimports:
+    local-prefixes: theing/gin-template
+
+  gocyclo:
+    min-complexity: 15
+
+  maligned:
+    suggest-new: true
+
+  dupl:
+    threshold: 100
+
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+
+  misspell:
+    locale: US
+
+  lll:
+    line-length: 120
+
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    disabled-checks:
+      - dupImport # https://github.com/go-critic/go-critic/issues/845
+      - ifElseChain
+      - octalLiteral
+      - whyNoLint
+      - wrapperFunc
+
+  funlen:
+    lines: 100
+    statements: 50
+
+  gocognit:
+    min-complexity: 20
+
+  nestif:
+    min-complexity: 4
+
+  gomnd:
+    settings:
+      mnd:
+        checks: argument,case,condition,operation,return,assign
+
+  exhaustivestruct:
+    default-signifies-exhaustive: true
+
+  errcheck:
+    check-type-assertions: true
+    check-blank: false
+
+  errorlint:
+    errorf: true
+    asserts: true
+    comparison: true
+
+  forbidigo:
+    forbid:
+      - 'fmt\.Print.*' # 使用日志而不是直接打印
+      - 'ioutil\.' # 使用 io/ioutil 的替代品
+      - 'panic\(' # 避免直接 panic
+
+  godox:
+    keywords:
+      - FIXME
+      - TODO
+      - BUG
+      - NOTE
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - dupl
+    - errcheck
+    - errorlint
+    - exportloopref
+    - exhaustive
+    - forbidigo
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - golint
+    - gomnd
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - interfacer
+    - lll
+    - misspell
+    - nakedret
+    - noctx
+    - nolintlint
+    - rowserrcheck
+    - scopelint
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - whitespace
+    - funlen
+    - gocognit
+    - nestif
+    - gomnd
+    - exhaustivestruct
+    - godox
+
+issues:
+  exclude-rules:
+    # 排除一些误报
+    - path: _test\.go
+      linters:
+        - gomnd
+        - funlen
+        - gocyclo
+    - path: main\.go
+      linters:
+        - gochecknoinits
+    # 排除一些常见的误报
+    - text: "weak cryptographic primitive"
+      linters:
+        - gosec
+    - text: "Use of weak random number generator"
+      linters:
+        - gosec
+
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  new: false

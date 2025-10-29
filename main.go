@@ -20,13 +20,13 @@ func main() {
 	}
 	db := common.InitDB() // 初始化数据库
 	defer db.DB()
-	
+
 	// 初始化缓存
 	if err := common.InitCache(); err != nil {
 		fmt.Printf("缓存初始化失败: %v\n", err)
 		// 缓存初始化失败不影响服务启动
 	}
-	
+
 	r := gin.Default()
 	r = routers.CollectRoute(r) // 路由中的collectroute，是一个gin的引擎，返回的也是一个引擎，可以说是代理服务。
 	port := viper.GetString("server_port")

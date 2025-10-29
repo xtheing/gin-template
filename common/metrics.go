@@ -10,14 +10,14 @@ import (
 // Metrics 监控指标结构
 type Metrics struct {
 	// HTTP 请求指标
-	HttpRequestsTotal    *prometheus.CounterVec
-	HttpRequestDuration  *prometheus.HistogramVec
-	HttpRequestSize      *prometheus.HistogramVec
-	HttpResponseSize     *prometheus.HistogramVec
+	HttpRequestsTotal   *prometheus.CounterVec
+	HttpRequestDuration *prometheus.HistogramVec
+	HttpRequestSize     *prometheus.HistogramVec
+	HttpResponseSize    *prometheus.HistogramVec
 
 	// 数据库指标
-	DatabaseConnections  *prometheus.GaugeVec
-	DatabaseQueryTotal   *prometheus.CounterVec
+	DatabaseConnections   *prometheus.GaugeVec
+	DatabaseQueryTotal    *prometheus.CounterVec
 	DatabaseQueryDuration *prometheus.HistogramVec
 
 	// 缓存指标
@@ -26,20 +26,20 @@ type Metrics struct {
 	CacheOperationsTotal *prometheus.CounterVec
 
 	// JWT 指标
-	JWTTokensIssued      *prometheus.CounterVec
-	JWTTokensValidated   *prometheus.CounterVec
-	JWTValidationErrors  *prometheus.CounterVec
+	JWTTokensIssued     *prometheus.CounterVec
+	JWTTokensValidated  *prometheus.CounterVec
+	JWTValidationErrors *prometheus.CounterVec
 
 	// 系统指标
-	SystemErrorsTotal     *prometheus.CounterVec
-	SystemPanicTotal      *prometheus.CounterVec
-	SystemMemoryUsage     *prometheus.GaugeVec
-	SystemGoroutineCount  *prometheus.GaugeVec
+	SystemErrorsTotal    *prometheus.CounterVec
+	SystemPanicTotal     *prometheus.CounterVec
+	SystemMemoryUsage    *prometheus.GaugeVec
+	SystemGoroutineCount *prometheus.GaugeVec
 
 	// 业务指标
-	UserRegistrations     *prometheus.CounterVec
-	UserLogins           *prometheus.CounterVec
-	ActiveSessions       *prometheus.GaugeVec
+	UserRegistrations *prometheus.CounterVec
+	UserLogins        *prometheus.CounterVec
+	ActiveSessions    *prometheus.GaugeVec
 }
 
 var (

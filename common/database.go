@@ -18,10 +18,10 @@ var DB *gorm.DB
 func InitDB() *gorm.DB {
 	driverName := viper.GetString("db_name")
 	fmt.Println("driverName: ", driverName)
-	
+
 	var db *gorm.DB
 	var err error
-	
+
 	if driverName == "mysql" {
 		db, err = initMySQLDB()
 	} else if driverName == "postgres" {
@@ -29,19 +29,19 @@ func InitDB() *gorm.DB {
 	} else {
 		panic("不支持的数据库类型: " + driverName)
 	}
-	
+
 	if err != nil {
 		panic("数据库连接失败: " + err.Error())
 	}
-	
+
 	// 配置连接池
 	configureConnectionPool(db)
-	
+
 	// 自动迁移
 	if err := db.AutoMigrate(&model.User{}); err != nil {
 		panic("数据库迁移失败: " + err.Error())
 	}
-	
+
 	DB = db
 	return db
 }
@@ -54,7 +54,7 @@ func initMySQLDB() (*gorm.DB, error) {
 	username := viper.GetString("mysql_username")
 	password := viper.GetString("mysql_password")
 	charset := viper.GetString("mysql_charset")
-	
+
 	args := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true",
 		username,
 		password,
@@ -62,7 +62,7 @@ func initMySQLDB() (*gorm.DB, error) {
 		port,
 		database,
 		charset)
-	
+
 	return gorm.Open(mysql.Open(args), &gorm.Config{})
 }
 
@@ -73,14 +73,14 @@ func initPostgresDB() (*gorm.DB, error) {
 	database := viper.GetString("postgres_database")
 	username := viper.GetString("postgres_username")
 	password := viper.GetString("postgres_password")
-	
+
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai",
 		host,
 		username,
 		password,
 		database,
 		port)
-	
+
 	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
 }
 
@@ -91,7 +91,7 @@ func configureConnectionPool(db *gorm.DB) {
 		fmt.Printf("获取底层数据库连接失败: %v\n", err)
 		return
 	}
-	
+
 	// 设置连接池参数
 	sqlDB.SetMaxIdleConns(10)           // 设置空闲连接池中连接的最大数量
 	sqlDB.SetMaxOpenConns(100)          // 设置打开数据库连接的最大数量

@@ -16,14 +16,14 @@ import (
 func CollectRoute(r *gin.Engine) *gin.Engine {
 	// 初始化监控指标
 	common.InitMetrics()
-	
+
 	// 添加全局中间件
-	r.Use(errorMiddleware.LoggingMiddleware())           // 日志中间件
-	r.Use(errorMiddleware.RequestIDMiddleware())        // 请求ID中间件
-	r.Use(errorMiddleware.ErrorHandlingMiddleware())     // 全局错误处理中间件
-	r.Use(errorMiddleware.ErrorHandlerMiddleware())       // 统一错误处理中间件
-	r.Use(errorMiddleware.MetricsMiddleware())           // 性能监控中间件
-	r.Use(errorMiddleware.DatabaseMetricsMiddleware())    // 数据库监控中间件
+	r.Use(errorMiddleware.LoggingMiddleware())         // 日志中间件
+	r.Use(errorMiddleware.RequestIDMiddleware())       // 请求ID中间件
+	r.Use(errorMiddleware.ErrorHandlingMiddleware())   // 全局错误处理中间件
+	r.Use(errorMiddleware.ErrorHandlerMiddleware())    // 统一错误处理中间件
+	r.Use(errorMiddleware.MetricsMiddleware())         // 性能监控中间件
+	r.Use(errorMiddleware.DatabaseMetricsMiddleware()) // 数据库监控中间件
 
 	// API 路由组
 	api := r.Group("/api")
@@ -31,8 +31,8 @@ func CollectRoute(r *gin.Engine) *gin.Engine {
 		// 认证相关路由
 		auth := api.Group("/auth")
 		{
-			auth.POST("/register", controller.Register)                     // 用户注册
-			auth.POST("/login", controller.UserLogin)                       // 用户登录
+			auth.POST("/register", controller.Register)                          // 用户注册
+			auth.POST("/login", controller.UserLogin)                            // 用户登录
 			auth.GET("/info", errorMiddleware.AuthMiddleware(), controller.Info) // 获取用户信息（需要认证）
 		}
 
@@ -52,10 +52,10 @@ func CollectRoute(r *gin.Engine) *gin.Engine {
 		// 健康检查路由
 		health := api.Group("/health")
 		{
-			health.GET("/", controller.HealthCheck)      // 系统健康检查
+			health.GET("/", controller.HealthCheck)            // 系统健康检查
 			health.GET("/database", controller.DatabaseHealth) // 数据库健康检查
 			health.GET("/stats", controller.DatabaseStats)     // 数据库统计信息
-			health.GET("/info", controller.SystemInfo)          // 系统信息
+			health.GET("/info", controller.SystemInfo)         // 系统信息
 		}
 
 		// 监控指标路由

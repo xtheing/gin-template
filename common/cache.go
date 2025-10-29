@@ -38,6 +38,8 @@ var (
 	Cache CacheClient
 	// CacheConfig 缓存配置
 	cacheConfig CacheConfig
+	// ErrCacheNotFound 缓存未找到错误
+	ErrCacheNotFound = fmt.Errorf("缓存不存在")
 )
 
 // InitCache 初始化缓存连接
@@ -204,4 +206,14 @@ func (h *CacheHelper) DeletePattern(ctx context.Context, pattern string) error {
 		}
 	}
 	return fmt.Errorf("当前缓存类型不支持模式删除")
+}
+
+// GetUserCacheKey 生成用户缓存键
+func GetUserCacheKey(userID, suffix string) string {
+	return fmt.Sprintf("user:%s:%s", userID, suffix)
+}
+
+// GetOptionCacheKey 生成选项缓存键
+func GetOptionCacheKey(optionType, suffix string) string {
+	return fmt.Sprintf("options:%s:%s", optionType, suffix)
 }

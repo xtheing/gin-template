@@ -27,17 +27,17 @@ type PasswordStrength int
 
 const (
 	PasswordWeak   PasswordStrength = iota // 弱密码
-	PasswordMedium                          // 中等密码
-	PasswordStrong                          // 强密码
+	PasswordMedium                         // 中等密码
+	PasswordStrong                         // 强密码
 )
 
 // PasswordValidation 密码验证结果
 type PasswordValidation struct {
-	IsValid  bool             // 是否有效
-	Strength PasswordStrength // 密码强度
-	Score    int              // 密码评分 (0-100)
-	Errors   []string         // 错误信息
-	Suggestions []string      // 建议
+	IsValid     bool             // 是否有效
+	Strength    PasswordStrength // 密码强度
+	Score       int              // 密码评分 (0-100)
+	Errors      []string         // 错误信息
+	Suggestions []string         // 建议
 }
 
 // ValidatePassword 验证密码复杂度
@@ -140,7 +140,7 @@ func hasRepeatingChars(s string, maxRepeats int) bool {
 	if len(s) < maxRepeats {
 		return false
 	}
-	
+
 	count := 1
 	for i := 1; i < len(s); i++ {
 		if s[i] == s[i-1] {

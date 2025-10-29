@@ -56,7 +56,7 @@ func ReleaseToken(user model.User) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims) // 加密方式应该是hs256
-	tokenString, err := token.SignedString(getJWTKey())         // 从配置获取密钥
+	tokenString, err := token.SignedString(getJWTKey())        // 从配置获取密钥
 	if err != nil {
 		return "生成token错误", err
 	}

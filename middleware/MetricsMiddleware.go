@@ -13,25 +13,25 @@ import (
 // MetricsMiddleware 性能监控中间件
 func MetricsMiddleware() gin.HandlerFunc {
 	metrics := common.GetMetrics()
-	
+
 	return func(c *gin.Context) {
 		start := time.Now()
 		path := c.Request.URL.Path
 		method := c.Request.Method
-		
+
 		// 获取请求大小
 		requestSize := c.Request.ContentLength
-		
+
 		// 处理请求
 		c.Next()
-		
+
 		// 计算请求持续时间
 		duration := time.Since(start)
-		
+
 		// 获取响应状态码和大小
 		statusCode := c.Writer.Status()
 		responseSize := c.Writer.Size()
-		
+
 		// 记录 HTTP 请求指标
 		metrics.RecordHttpRequest(
 			method,
@@ -41,7 +41,7 @@ func MetricsMiddleware() gin.HandlerFunc {
 			requestSize,
 			int64(responseSize),
 		)
-		
+
 		// 定期更新系统指标
 		updateSystemMetrics(metrics)
 	}
@@ -58,13 +58,13 @@ func MetricsHandler() gin.HandlerFunc {
 func updateSystemMetrics(metrics *common.Metrics) {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
-	
+
 	// 更新内存使用
 	metrics.UpdateSystemMemory(m.HeapAlloc, m.StackInuse, m.Sys)
-	
+
 	// 更新协程数量
 	metrics.UpdateGoroutineCount(runtime.NumGoroutine())
-	
+
 	// 更新数据库连接数（如果数据库已初始化）
 	if common.DB != nil {
 		sqlDB, err := common.DB.DB()
@@ -78,7 +78,7 @@ func updateSystemMetrics(metrics *common.Metrics) {
 // DatabaseMetricsMiddleware 数据库查询监控中间件
 func DatabaseMetricsMiddleware() gin.HandlerFunc {
 	metrics := common.GetMetrics()
-	
+
 	return func(c *gin.Context) {
 		// 在请求上下文中存储指标记录器
 		c.Set("metrics", metrics)
@@ -101,20 +101,20 @@ func RecordDatabaseQuery(c *gin.Context, operation, table string, duration time.
 // RecordCacheMetrics 记录缓存指标
 func RecordCacheMetrics(c *gin.Context, operation, cacheType, keyPrefix string, hit bool) {
 	metrics := common.GetMetrics()
-	
+
 	if hit {
 		metrics.RecordCacheHit(cacheType, keyPrefix)
 	} else {
 		metrics.RecordCacheMiss(cacheType, keyPrefix)
 	}
-	
+
 	metrics.RecordCacheOperation(operation, cacheType, "success")
 }
 
 // RecordJWTMetrics 记录 JWT 相关指标
 func RecordJWTMetrics(c *gin.Context, tokenType string, validated bool, errorType string) {
 	metrics := common.GetMetrics()
-	
+
 	if validated {
 		metrics.RecordJWTTokenValidated("success")
 		if tokenType == "issued" {
@@ -131,7 +131,7 @@ func RecordJWTMetrics(c *gin.Context, tokenType string, validated bool, errorTyp
 // RecordBusinessMetrics 记录业务指标
 func RecordBusinessMetrics(c *gin.Context, action, entityType, status string) {
 	metrics := common.GetMetrics()
-	
+
 	switch action {
 	case "register":
 		metrics.RecordUserRegistration(status)
@@ -155,7 +155,7 @@ type PerformanceMetrics struct {
 func GetPerformanceMetrics() PerformanceMetrics {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
-	
+
 	// 这里简化处理，实际应用中应该从指标中获取真实数据
 	return PerformanceMetrics{
 		RequestCount:    0, // 应该从 HTTP 请求计数器获取

@@ -12,15 +12,15 @@ import (
 type HealthStatus struct {
 	Status    string                 `json:"status"`    // 状态：healthy, unhealthy
 	Timestamp int64                  `json:"timestamp"` // 时间戳
-	Database  DatabaseHealthStatus     `json:"database"`  // 数据库状态
-	Services  map[string]interface{}  `json:"services"`  // 其他服务状态
+	Database  DatabaseHealthStatus   `json:"database"`  // 数据库状态
+	Services  map[string]interface{} `json:"services"`  // 其他服务状态
 }
 
 // DatabaseHealthStatus 数据库健康状态
 type DatabaseHealthStatus struct {
-	Status     string        `json:"status"`     // 状态
-	Connection string        `json:"connection"` // 连接信息
-	Latency   time.Duration `json:"latency"`   // 延迟
+	Status     string        `json:"status"`          // 状态
+	Connection string        `json:"connection"`      // 连接信息
+	Latency    time.Duration `json:"latency"`         // 延迟
 	Error      string        `json:"error,omitempty"` // 错误信息
 }
 
@@ -124,7 +124,7 @@ func checkDatabaseHealth() DatabaseHealthStatus {
 	return DatabaseHealthStatus{
 		Status:     "healthy",
 		Connection: "connected",
-		Latency:   latency,
+		Latency:    latency,
 	}
 }
 
@@ -146,7 +146,7 @@ func checkServicesHealth(status *HealthStatus) {
 func checkJWTService() map[string]interface{} {
 	// 简单检查JWT配置是否正确
 	jwtSecret := getJWTKey()
-	
+
 	if jwtSecret == nil || len(jwtSecret) == 0 {
 		return map[string]interface{}{
 			"status": "unhealthy",
@@ -175,7 +175,7 @@ func checkCacheService() map[string]interface{} {
 
 	testKey := "health_check_test"
 	testValue := "ok"
-	
+
 	// 设置测试键
 	if err := Cache.Set(ctx, testKey, testValue, 5*time.Second); err != nil {
 		return map[string]interface{}{
@@ -245,17 +245,17 @@ func GetDatabaseStats() map[string]interface{} {
 	}
 
 	stats := sqlDB.Stats()
-	
+
 	return map[string]interface{}{
-		"status":         "connected",
-		"open_connections": stats.OpenConnections,
-		"in_use":         stats.InUse,
-		"idle":           stats.Idle,
-		"max_open_conns": stats.MaxOpenConnections,
-		"wait_count":     stats.WaitCount,
-		"wait_duration":   stats.WaitDuration.String(),
-		"max_idle_closed": stats.MaxIdleClosed,
-		"max_idle_time":   "0", // Go 1.15+ 中 MaxIdleTime 字段不存在
+		"status":              "connected",
+		"open_connections":    stats.OpenConnections,
+		"in_use":              stats.InUse,
+		"idle":                stats.Idle,
+		"max_open_conns":      stats.MaxOpenConnections,
+		"wait_count":          stats.WaitCount,
+		"wait_duration":       stats.WaitDuration.String(),
+		"max_idle_closed":     stats.MaxIdleClosed,
+		"max_idle_time":       "0", // Go 1.15+ 中 MaxIdleTime 字段不存在
 		"max_lifetime_closed": stats.MaxLifetimeClosed,
 	}
 }

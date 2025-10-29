@@ -13,13 +13,13 @@ func Success(ctx *gin.Context, data interface{}, msg string) {
 	if msg == "" {
 		msg = common.GetErrorMessage(common.CodeSuccess)
 	}
-	
+
 	// 构造响应数据
 	responseData := gin.H{
 		"message": msg,
 		"data":    data,
 	}
-	
+
 	// 使用新的统一响应函数
 	middleware.SuccessResponse(ctx, responseData)
 }
@@ -56,7 +56,7 @@ func PaginationResponse(ctx *gin.Context, list interface{}, total int64, page in
 	if msg == "" {
 		msg = "查询成功"
 	}
-	
+
 	responseData := gin.H{
 		"list":      list,
 		"total":     total,
@@ -64,6 +64,6 @@ func PaginationResponse(ctx *gin.Context, list interface{}, total int64, page in
 		"page_size": pageSize,
 		"message":   msg,
 	}
-	
+
 	middleware.SuccessResponse(ctx, responseData)
 }

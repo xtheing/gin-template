@@ -1,0 +1,551 @@
+swagger: "2.0"
+info:
+  title: Gin Template API
+  description: 一个基于 Gin 框架的企业级 Go API 模板项目
+  version: 2.0.0
+  contact:
+    name: TheIng
+    email: support@theing.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+host: localhost:8080
+basePath: /api
+schemes:
+  - http
+  - https
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+tags:
+  - name: auth
+    description: 用户认证相关接口
+  - name: users
+    description: 用户管理相关接口
+  - name: admin
+    description: 管理员相关接口
+  - name: options
+    description: 选项数据相关接口
+  - name: health
+    description: 健康检查相关接口
+  - name: metrics
+    description: 监控指标相关接口
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: 用户注册
+      description: 创建新用户账户
+      operationId: registerUser
+      parameters:
+        - name: userData
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserRegistration'
+      responses:
+        '200':
+          description: 注册成功
+          schema:
+            $ref: '#/definitions/UserResponse'
+        '400':
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '409':
+          description: 用户已存在
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: 用户登录
+      description: 用户身份验证并获取访问令牌
+      operationId: userLogin
+      parameters:
+        - name: credentials
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LoginRequest'
+      responses:
+        '200':
+          description: 登录成功
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        '400':
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 用户名或密码错误
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /auth/info:
+    get:
+      tags:
+        - auth
+      summary: 获取用户信息
+      description: 获取当前登录用户的详细信息
+      operationId: getUserInfo
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/UserResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /admin/login:
+    post:
+      tags:
+        - admin
+      summary: 管理员登录
+      description: 管理员身份验证并获取访问令牌
+      operationId: adminLogin
+      parameters:
+        - name: credentials
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AdminLoginRequest'
+      responses:
+        '200':
+          description: 登录成功
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        '400':
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 用户名或密码错误
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /options/industry:
+    get:
+      tags:
+        - options
+      summary: 获取行业领域列表
+      description: 获取所有可用的行业领域选项
+      operationId: getIndustryList
+      responses:
+        '200':
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/IndustryListResponse'
+
+  /options/profession:
+    get:
+      tags:
+        - options
+      summary: 获取专业选项分类
+      description: 获取所有可用的专业选项分类
+      operationId: getProfessionList
+      responses:
+        '200':
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/ProfessionListResponse'
+
+  /health/:
+    get:
+      tags:
+        - health
+      summary: 系统健康检查
+      description: 检查系统整体健康状态
+      operationId: healthCheck
+      responses:
+        '200':
+          description: 健康检查结果
+          schema:
+            $ref: '#/definitions/HealthResponse'
+
+  /health/database:
+    get:
+      tags:
+        - health
+      summary: 数据库健康检查
+      description: 检查数据库连接状态
+      operationId: databaseHealth
+      responses:
+        '200':
+          description: 数据库健康状态
+          schema:
+            $ref: '#/definitions/DatabaseHealthResponse'
+
+  /health/stats:
+    get:
+      tags:
+        - health
+      summary: 数据库统计信息
+      description: 获取数据库连接统计信息
+      operationId: databaseStats
+      responses:
+        '200':
+          description: 数据库统计信息
+          schema:
+            $ref: '#/definitions/DatabaseStatsResponse'
+
+  /health/info:
+    get:
+      tags:
+        - health
+      summary: 系统信息
+      description: 获取系统基本信息
+      operationId: systemInfo
+      responses:
+        '200':
+          description: 系统信息
+          schema:
+            $ref: '#/definitions/SystemInfoResponse'
+
+  /metrics:
+    get:
+      tags:
+        - metrics
+      summary: Prometheus 指标
+      description: 获取 Prometheus 格式的监控指标
+      operationId: getMetrics
+      responses:
+        '200':
+          description: 监控指标
+          schema:
+            type: string
+
+securityDefinitions:
+  BearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: JWT 访问令牌，格式：Bearer <token>
+
+definitions:
+  UserRegistration:
+    type: object
+    required:
+      - username
+      - email
+      - password
+    properties:
+      username:
+        type: string
+        description: 用户名
+        example: johndoe
+        minLength: 3
+        maxLength: 50
+      email:
+        type: string
+        format: email
+        description: 邮箱地址
+        example: john@example.com
+      password:
+        type: string
+        description: 密码
+        example: SecurePass123!
+        minLength: 8
+        maxLength: 128
+
+  LoginRequest:
+    type: object
+    required:
+      - username
+      - password
+    properties:
+      username:
+        type: string
+        description: 用户名
+        example: johndoe
+      password:
+        type: string
+        description: 密码
+        example: SecurePass123!
+
+  AdminLoginRequest:
+    type: object
+    required:
+      - username
+      - password
+    properties:
+      username:
+        type: string
+        description: 管理员用户名
+        example: admin
+      password:
+        type: string
+        description: 管理员密码
+        example: AdminPass123!
+
+  LoginResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: 响应码
+        example: 200
+      message:
+        type: string
+        description: 响应消息
+        example: 登录成功
+      data:
+        type: object
+        properties:
+          token:
+            type: string
+            description: JWT 访问令牌
+            example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          expires_in:
+            type: integer
+            description: 令牌过期时间（秒）
+            example: 86400
+          user:
+            $ref: '#/definitions/User'
+
+  UserResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: 响应码
+        example: 200
+      message:
+        type: string
+        description: 响应消息
+        example: 操作成功
+      data:
+        $ref: '#/definitions/User'
+
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: 用户ID
+        example: 1
+      username:
+        type: string
+        description: 用户名
+        example: johndoe
+      email:
+        type: string
+        description: 邮箱地址
+        example: john@example.com
+      created_at:
+        type: string
+        format: date-time
+        description: 创建时间
+        example: 2023-01-01T00:00:00Z
+      updated_at:
+        type: string
+        format: date-time
+        description: 更新时间
+        example: 2023-01-01T00:00:00Z
+
+  IndustryListResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: 响应码
+        example: 200
+      message:
+        type: string
+        description: 响应消息
+        example: 获取成功
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Industry'
+
+  Industry:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: 行业ID
+        example: 1
+      name:
+        type: string
+        description: 行业名称
+        example: 信息技术
+      code:
+        type: string
+        description: 行业代码
+        example: IT
+
+  ProfessionListResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: 响应码
+        example: 200
+      message:
+        type: string
+        description: 响应消息
+        example: 获取成功
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Profession'
+
+  Profession:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: 专业ID
+        example: 1
+      name:
+        type: string
+        description: 专业名称
+        example: 软件工程
+      code:
+        type: string
+        description: 专业代码
+        example: SE
+
+  HealthResponse:
+    type: object
+    properties:
+      status:
+        type: string
+        description: 整体健康状态
+        example: healthy
+      timestamp:
+        type: integer
+        description: 检查时间戳
+        example: 1672531200
+      database:
+        $ref: '#/definitions/DatabaseHealthStatus'
+      services:
+        type: object
+        additionalProperties:
+          type: object
+        description: 其他服务状态
+
+  DatabaseHealthStatus:
+    type: object
+    properties:
+      status:
+        type: string
+        description: 数据库状态
+        example: healthy
+      connection:
+        type: string
+        description: 连接状态
+        example: connected
+      latency:
+        type: string
+        description: 连接延迟
+        example: 5.2ms
+      error:
+        type: string
+        description: 错误信息（如果有）
+        example: ""
+
+  DatabaseHealthResponse:
+    type: object
+    properties:
+      status:
+        type: string
+        description: 数据库状态
+        example: healthy
+      connection:
+        type: string
+        description: 连接状态
+        example: connected
+      latency:
+        type: string
+        description: 连接延迟
+        example: 5.2ms
+      error:
+        type: string
+        description: 错误信息（如果有）
+        example: ""
+
+  DatabaseStatsResponse:
+    type: object
+    properties:
+      status:
+        type: string
+        description: 连接状态
+        example: connected
+      open_connections:
+        type: integer
+        description: 打开连接数
+        example: 10
+      in_use:
+        type: integer
+        description: 使用中连接数
+        example: 3
+      idle:
+        type: integer
+        description: 空闲连接数
+        example: 7
+      max_open_conns:
+        type: integer
+        description: 最大打开连接数
+        example: 100
+      wait_count:
+        type: integer
+        description: 等待连接次数
+        example: 0
+      wait_duration:
+        type: string
+        description: 等待总时间
+        example: 0s
+
+  SystemInfoResponse:
+    type: object
+    properties:
+      service:
+        type: string
+        description: 服务名称
+        example: gin-template
+      version:
+        type: string
+        description: 服务版本
+        example: 2.0.0
+      go_version:
+        type: string
+        description: Go 版本
+        example: go1.21.0
+      build_time:
+        type: string
+        description: 构建时间
+        example: 2023-01-01T00:00:00Z
+      git_commit:
+        type: string
+        description: Git 提交哈希
+        example: abc123def
+
+  ErrorResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: 错误码
+        example: 400
+      message:
+        type: string
+        description: 错误消息
+        example: 请求参数错误
+      data:
+        type: object
+        description: 错误详情（可选）
+        example: {}
